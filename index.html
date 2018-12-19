@@ -1,0 +1,38 @@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.2/p5.js"></script>
+<html>
+  <head>
+<h2>KANKER BEJEWELED</h2>
+  </head>
+  <body>
+  </body>
+</html>
+
+<script>
+var cols = 8;
+var rows = 8;
+var colors = ["purple","green","red","blue"];
+
+function setup(){
+  createCanvas(900, 900);
+}
+
+function draw(){
+  background(255);
+  createEmptyArray();
+  noloop();
+}
+
+function createEmptyArray(){
+  for(var i = 0; i < cols; i++){
+    for(var j = 0; j < rows; j++){
+      var x = i * 100;
+      var y = j * 100;
+      stroke(0);
+      fill(random(colors));
+      rect(x,y,100,100);
+    }
+  }
+
+}
+
+</script>
