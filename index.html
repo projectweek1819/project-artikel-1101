@@ -10,29 +10,46 @@
 <script>
 var cols = 8;
 var rows = 8;
-var colors = ["purple","green","red","blue"];
+var colors = ["red", "green", "blue","purple","orange"];
 
-function setup(){
-  createCanvas(900, 900);
+function setup() {
+    createCanvas(900, 900);
+    level = createArray(cols, rows);
+    insertColors();
+    level[0][0] = "black"; 
 }
 
-function draw(){
-  background(255);
-  createEmptyArray();
-  noloop();
+function draw() {
+    background(255);
+    createEmptyArray();
+    noLoop();
 }
 
-function createEmptyArray(){
-  for(var i = 0; i < cols; i++){
-    for(var j = 0; j < rows; j++){
-      var x = i * 100;
-      var y = j * 100;
-      stroke(0);
-      fill(random(colors));
-      rect(x,y,100,100);
+
+function createArray(cols, rows) {
+    var level = new Array(cols);
+    for (var i = 0; i < level.length; i++) {
+        level[i] = new Array(rows);
     }
-  }
-
+    return level;
+}
+function insertColors() {
+    for (var i = 0; i < cols; i++) {
+        for (var j = 0; j < rows; j++) {
+            level[i][j] = random(colors);
+        }
+    }
 }
 
+function createEmptyArray() {
+    for (var i = 0; i < cols; i++) {
+        for (var j = 0; j < rows; j++) {
+            var x = i * 100;
+            var y = j * 100;
+            fill(level[i][j]);
+            stroke(30);
+            rect(x, y, 100, 100);
+        }
+    }
+}
 </script>
