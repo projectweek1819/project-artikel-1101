@@ -1,75 +1,100 @@
-function width(grid) {
-    return grid[0].length;
-}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.2/p5.js"></script>
+<html>
+  <head>
+<h2>KANKER BEJEWELED</h2>
+  </head>
+  <body>
+  </body>
+</html>
 
-function height(grid) {
-    return grid.length;
+<script>
+var cols = 8;
+var rows = 8;
+var colors = ["red", "green", "blue","purple","orange"];
+var position = (0,0)
+function setup() {
+    createCanvas(900, 900);
+    level = createArray(cols, rows);
+    insertColors();
+    pos(level, position);
+    removeChains(level);
 }
-
-function isInside(grid, position) {
-    for (let i = 0; i < grid.length; i++) {
-        for (let j = 0; j < grid[i].length; j++) {
-            if (grid[i][j] === position) {
-                return true;
-            }
+function draw() {
+    background(255);
+    createEmptyArray();
+    noLoop();
+}
+function width(level) {
+return level[0].length;
+}
+function height(level) {
+return level.length;
+}
+function createArray(cols, rows) {
+    var level = new Array(cols);
+    for (var i = 0; i < level.length; i++) {
+        level[i] = new Array(rows);
+    }
+    return level;
+}
+function insertColors() {
+    for (var i = 0; i < cols; i++) {
+        for (var j = 0; j < rows; j++) {
+            level[i][j] = random(colors);
         }
     }
-    return false;
 }
-
-function isInside(grid, position) {
+function createEmptyArray() {
+    for (var i = 0; i < cols; i++) {
+        for (var j = 0; j < rows; j++) {
+            var x = i * 100;
+            var y = j * 100;
+            fill(level[i][j]);
+            stroke(30);
+            rect(x, y, 100, 100);
+        }
+    }
+}
+function pos(level, position)
+{
+  const { x, y } = position;
+     let i;
+     for (i = 1; x + i < 8; ++i) {
+         if (level[y][x + i] !== level[y][x]) {
+             break;
+         }
+     }
+     let j;
+     for (j = 1; x - j >= 0; ++j) {
+         if (level[y][x - j] !== level[y][x]) {
+             break;
+         }
+     }
+     return i + j - 1;
+ }
+ function verticalChainAt(level, position) {
     const {x, y} = position;
-    return 0 <= x && x < width(grid) && 0 <= y && y < height(grid);
-}
-
-function swap(grid,p,q) {
-    let temp = grid[p.y][p.x];
-    grid[p.y][p.x] = grid[q.y][q.x];
-    grid[q.y][q.x] = temp;
-
-}
-
-function horizontalChainAt(grid, position) {
-    const { x, y } = position;
     let i;
-    for (i = 1; x + i < width(grid); ++i) {
-        if (grid[y][x + i] !== grid[y][x]) {
-            break;
-        }
-    }
-    let j;
-    for (j = 1; x - j >= 0; ++j) {
-        if (grid[y][x - j] !== grid[y][x]) {
-            break;
-        }
-    }
-    return i + j - 1;
-}
-
-function verticalChainAt(grid, position) {
-    const {x, y} = position;
-    let i;
-    for (i = 1;y + i < height(grid); ++i) {
-        if (grid[y+ i][x] !== grid[y][x]) {
+    for (i = 1;y + i < 8; ++i) {
+        if (level[y+ i][x] !== level[y][x]) {
             break;
         }
     }
     let j;
     for (j = 1; y - j >=0; ++j) {
-        if (grid[y-j][x] !== grid[y][x]) {
+        if (level[y-j][x] !== level[y][x]) {
             break;
         }
     }
     return i + j - 1 ;
 }
-
-function removeChains(grid){
+function removeChains(level){
     const result = {};
     const positions = [];
-    for (let y = 0; y < height(grid); y++){
+    for (let y = 0; y < 8; y++){
         let x = 0;
-        while (x < width(grid)){
-            const n = horizontalChainAt(grid, {x, y});
+        while (x < 8){
+            const n = pos(level, {x, y});
             if (n >2){
                 for ( let i = 0; i !== n; i++){
                     positions.push({x: x + i, y});
@@ -79,10 +104,10 @@ function removeChains(grid){
         }
     }
 
-    for (let x = 0; x < width(grid); x++){
+    for (let x = 0; x < 8; x++){
         let y = 0;
-        while (y < height(grid)){
-            const n = verticalChainAt(grid, {x, y});
+        while (y < 8){
+            const n = verticalChainAt(level, {x, y});
             if (n >2){
                 for ( let i = 0; i !== n; i++){
                     positions.push({x, y: y + i});
@@ -94,26 +119,35 @@ function removeChains(grid){
 
     for(const position of positions){
         const {x,y} = position;
-        const color = grid[y][x];
+        const color = level[y][x];
         result[color] = (result[color] || 0 ) + 1;;
     }
 
     for(const {x,y} of positions){
-        grid[y][x] = "";
+        level[y][x] = "";
     }
     return result;
 }
 
-function collapse(grid){
-    for (let y = height(grid) - 1; y > 0; y--){
-        for(let x = 0; x < width(grid); x++){
-            for (let y = height(grid) - 1; y > 0; y--){
+function collapse(level){
+    for (let y = height(level) - 1; y > 0; y--){
+        for(let x = 0; x < width(level); x++){
+            for (let y = height(level) - 1; y > 0; y--){
                 var q = {x, y};
                 q.y = y-1;
-                if( grid[y][x] == ""){
-                    swap(grid, {x, y}, q);
+                if( level[y][x] == ""){
+                    swap(level, {x, y}, q);
                 }
             }
         }
     }
 }
+function swap(level,p,q) {
+    let temp = level[p.y][p.x];
+    level[p.y][p.x] = level[q.y][q.x];
+    l[q.y][q.x] = temp;
+
+}
+
+
+</script>
