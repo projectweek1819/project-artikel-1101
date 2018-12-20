@@ -12,12 +12,20 @@ var cols = 8;
 var rows = 8;
 var colors = ["red", "green", "blue","purple","orange"];
 var position = (0,0)
+
+
+
 function setup() {
     createCanvas(900, 900);
     level = createArray(cols, rows);
     insertColors();
-    pos(level, position);
+    pos(level, position)
+    verticalChainAt(level)
     removeChains(level);
+    collapse(level);
+
+
+
 }
 function draw() {
     background(255);
@@ -130,9 +138,9 @@ function removeChains(level){
 }
 
 function collapse(level){
-    for (let y = height(level) - 1; y > 0; y--){
-        for(let x = 0; x < width(level); x++){
-            for (let y = height(level) - 1; y > 0; y--){
+    for (let y = 8 - 1; y > 0; y--){
+        for(let x = 0; x < 8; x++){
+            for (let y = 8 - 1; y > 0; y--){
                 var q = {x, y};
                 q.y = y-1;
                 if( level[y][x] == ""){
@@ -142,12 +150,16 @@ function collapse(level){
         }
     }
 }
-function swap(level,p,q) {
+
+function swap(level ,p,q) {
     let temp = level[p.y][p.x];
     level[p.y][p.x] = level[q.y][q.x];
-    l[q.y][q.x] = temp;
+    level[q.y][q.x] = temp;
 
 }
+
+
+
 
 
 </script>
