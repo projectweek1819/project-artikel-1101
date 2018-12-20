@@ -16,7 +16,7 @@ function setup() {
     createCanvas(900, 900);
     level = createArray(cols, rows);
     insertColors();
-    level[0][0] = "black"; 
+pos();
 }
 
 function draw() {
@@ -51,5 +51,17 @@ function createEmptyArray() {
             rect(x, y, 100, 100);
         }
     }
+}
+
+function pos()
+{
+  if (level[0][0] === "green" && level[1][0] === "green" ) {
+    level[0][0] = "black";
+    level[1][0] = "black";
+  }
+
+  else {
+    level[2][0] = "lightblue"
+  }
 }
 </script>
