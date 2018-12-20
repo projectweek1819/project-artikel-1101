@@ -8,16 +8,19 @@
 </html>
 
 <script>
+tweeblokken= []
+var level = {cols, rows}
 var cols = 8;
 var rows = 8;
 var colors = ["red", "green", "blue","purple","orange"];
-var position = (0,0)
+var position = (cols, rows)
 function setup() {
     createCanvas(900, 900);
     level = createArray(cols, rows);
     insertColors();
-    pos(level, position);
     removeChains(level);
+    scanveld()
+    newColor()
 }
 function draw() {
     background(255);
@@ -25,10 +28,10 @@ function draw() {
     noLoop();
 }
 function width(level) {
-return level[0].length;
+    return level[0][0].length;
 }
 function height(level) {
-return level.length;
+    return level.length;
 }
 function createArray(cols, rows) {
     var level = new Array(cols);
@@ -37,6 +40,26 @@ function createArray(cols, rows) {
     }
     return level;
 }
+function scanveld(){
+  let result = false
+  while(!result){
+
+  for (var i = 0; i < cols; i++) {
+      for (var j = 0; j < rows; j++) {
+        if(level[i][j] === ""){
+          result = true
+        }
+
+      }
+    }
+  }
+  newColor()
+
+
+}
+
+
+
 function insertColors() {
     for (var i = 0; i < cols; i++) {
         for (var j = 0; j < rows; j++) {
@@ -103,7 +126,6 @@ function removeChains(level){
             x += n;
         }
     }
-
     for (let x = 0; x < 8; x++){
         let y = 0;
         while (y < 8){
@@ -116,19 +138,16 @@ function removeChains(level){
             y += n;
         }
     }
-
     for(const position of positions){
         const {x,y} = position;
         const color = level[y][x];
         result[color] = (result[color] || 0 ) + 1;;
     }
-
     for(const {x,y} of positions){
         level[y][x] = "";
     }
     return result;
 }
-
 function collapse(level){
     for (let y = height(level) - 1; y > 0; y--){
         for(let x = 0; x < width(level); x++){
@@ -136,18 +155,52 @@ function collapse(level){
                 var q = {x, y};
                 q.y = y-1;
                 if( level[y][x] == ""){
-                    swap(level, {x, y}, q);
+                    swap(level, {cols, rows}, q);
                 }
             }
         }
     }
 }
-function swap(level,p,q) {
-    let temp = level[p.y][p.x];
-    level[p.y][p.x] = level[q.y][q.x];
-    l[q.y][q.x] = temp;
+function swap(level, p, q){
+
+    let blokp = level[p.rows][p.cols];
+    let blokq = level[q.rows][q.cols];
+    level[p.rows][p.cols]= blokq;
+    level[q.rows][q.cols]= blokp;
+}
+function mouseClicked(){
+    tweeblokken.push(geefBlok())
+
+    if(tweeblokken.length > 1){
+        let p = tweeblokken[0];
+        let q = tweeblokken[1];
+        tweeblokken = [];
+        swap(level, p, q);
+    }
 
 }
-
+function geefBlok(){
+    var blok;
+    for(let x = 0; x <= 8; x++){
+        if(x <= mouseX && mouseX <=(x+1)){
+            for(let y = 0; y <= 8; y++){
+                if(y <= mouseY && mouseY <= (y+1)){
+                    blok = {cols: x, rows: y}
+                    console.log(blok)
+                }
+            }
+        }
+    }
+    return blok;
+}
+function newColor(){
+  for (var i = 0; i < cols; i++) {
+      for (var j = 0; j < rows; j++) {
+        if(level[i][j] === ""){
+          level[i][j] = random(colors)
+        }
+}
+}
+}
 
 </script>
